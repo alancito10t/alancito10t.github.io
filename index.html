@@ -38,21 +38,21 @@
     <main>
         <!-- Acá estamos dentro del main -->
         <section id="productos">
-            <h2>Our Fine Products</h2>
+            <h2>Nuestros productos</h2>
             <div class="container-productos">
                 <article class="producto-card">
-                    <img src="placeholder.jpg" alt="Victorian Pocket Watch">
-                    <h3>Victorian Pocket Watch</h3>
-                    <p>A most distinguished timepiece for the gentleman of taste</p>
-                    <span class="precio">42 Guineas</span>
-                    <button>Add to Cart</button>
+                    <img src="img/reloj.jpeg" alt="Reloj de Bolsillo">
+                    <h3>Reloj de Bolsillo</h3>
+                    <p>Para el bolsillo del caballero</p>
+                    <span class="precio">£42</span>
+                    <button>Comprar</button>
                 </article>
-                <!-- More product cards would go here -->
+                <!-- Acá irían los otros productos -->
             </div>
         </section>
 
         <section id="reseñas">
-            <h2>Customer Testimonials</h2>
+            <h2>Distinguida clientela</h2>
             <div class="reseñas-grid">
                 <div class="reseñas-card">
                     <h3>Su Majestad la Reina Victoria</h3>
@@ -66,11 +66,20 @@
         <section id="contacto">
             <h2>¡Contáctenos debajo o utilice una carta por diligencia!</h2>
             <div class="container-contacto">
-                <form action="https://formspree.io/f/meojyvdz" method="POST">
-                    <label> Nombre:<br><input type="text" name="nombre"></label><br>
-                    <label> Correo electrónico:<br><input type="email" name="email"></label><br>
-                    <label> Mensaje:<br><textarea name="mensaje"></textarea><br></label><br>
-                    <button type="submit">Send</button>
+                <form action="https://formspree.io/f/meojyvdz" method="POST" class="formulario">
+                    <label> Nombre:<br>
+                        <input type="text" name="nombre" class="form-input">
+                    </label>
+                    
+                    <label> Correo electrónico:<br>
+                        <input type="email" name="email" class="form-input">
+                    </label>
+                    
+                    <label> Mensaje:<br>
+                        <textarea name="mensaje" class="form-input"></textarea>
+                    </label>
+                    
+                    <button type="submit" class="botonform">Enviar carta</button>
                 </form>
             </div>
         </section>
