@@ -1,45 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!--Configuración básica-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <title>Tienda Libre Virtual (parodia)</title>
+    
+    <!--Importado GFonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <!--Favicon-->
+    <link rel="icon" href="img/logo.ico">
+
+    <!--CSS-->
+    <link rel="stylesheet" href="css/styles2.css">
+    
+    <!--Título-->
+    <title>La Pulpería Virtual</title>
 </head>
 <body>
     <header>
         <!-- Acá estamos dentro del header -->
-        <h1>Tienda Libre Virtual (PARODIA)</h1>
-        <h2>Un proyecto de la Presidencia de la Nación Argentina</h2>
-        <img src="img/logo_argentina.svg" alt="logo Presidencia" width="300">
+        <h1 class="tituloantiguo">La Pulpería Virtual</h1>
+        <p>¡Todos los productos de época más adecuados para Vd., consumidor distinguido!</p>
     </header>
+
     <nav>
         <!-- Acá estamos dentro del nav -->
-        <ul class="nav-list">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Categorías</a></li>
-            <li><a href="#">Preguntas frecuentes</a></li>
-            <li><a href="#">Contacto</a></li>
+        <ul>
+            <li><a href="#productos">Productos</a></li>
+            <li><a href="#reseñas">Reseñas</a></li>
+            <li><a href="#contacto">Contactanos</a></li>
         </ul>
     </nav>
+
     <main>
         <!-- Acá estamos dentro del main -->
-        <p><strong>La Libertad© alcanza a todas las personas, en todos los lugares, en todo momento.</strong> Esta Tienda Virtual permite a las personas fortalecer su ejercicio cívico permitiendo, modularmente, la compra de elementos de gobierno de manera segura y transparente.</p>
-        <br>
-        <img width="500" src="img/oferta.png" alt="Banner Ofertas">
-        <br>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/yWJ-oxXR_RY?si=omrS4c-J-mLazR1s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <form action="https://formspree.io/f/meojyvdz" method="POST">
-            <label> Nombre:<br><input type="text" name="nombre"></label><br>
-            <label> Email:<br><input type="email" name="email"></label><br>
-            <label> Mensaje:<br><textarea name="mensaje"></textarea><br></label><br>
-            <button type="submit">Send</button>
-        </form>
+        <section id="productos">
+            <h2>Our Fine Products</h2>
+            <div class="container-productos">
+                <article class="producto-card">
+                    <img src="placeholder.jpg" alt="Victorian Pocket Watch">
+                    <h3>Victorian Pocket Watch</h3>
+                    <p>A most distinguished timepiece for the gentleman of taste</p>
+                    <span class="precio">42 Guineas</span>
+                    <button>Add to Cart</button>
+                </article>
+                <!-- More product cards would go here -->
+            </div>
+        </section>
+
+        <section id="reseñas">
+            <h2>Customer Testimonials</h2>
+            <div class="reseñas-grid">
+                <div class="reseñas-card">
+                    <h3>Su Majestad la Reina Victoria</h3>
+                    <div class="estrellas">★★★★★</div>
+                    <p>"¡El único servicio online en el que confío!"</p>
+                </div>
+                <!-- Acá van otras reseñas -->
+            </div>
+        </section>
+
+        <section id="contacto">
+            <h2>¡Contáctenos debajo o utilice una carta por diligencia!</h2>
+            <div class="container-contacto">
+                <form action="https://formspree.io/f/meojyvdz" method="POST">
+                    <label> Nombre:<br><input type="text" name="nombre"></label><br>
+                    <label> Correo electrónico:<br><input type="email" name="email"></label><br>
+                    <label> Mensaje:<br><textarea name="mensaje"></textarea><br></label><br>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </section>
     </main>
+
     <footer>
         <!-- Acá estamos dentro del footer -->
-         <p>Información de contacto: @casarosadaargentina</p>
-         <p>© 2024 Mi Sitio Web. Todos los derechos reservados.</p>
+        <p>© 1884 La Pulpería Virtual</p>
+        <p>Puede encontrarnos en 221B Baker Street, Londres</p>
     </footer>
 </body>
 </html>

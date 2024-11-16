@@ -1,0 +1,218 @@
+/* Para no olvidarme de los colores */
+:root {
+    --primary-color: #2c1810;
+    --secondary-color: #8b4513;
+    --accent-color: #daa520;
+    --background-color: #f5f5dc;
+    --text-color: #2c1810;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.6;
+}
+
+/* Título de la página */
+header {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+    text-align: center;
+    padding: 2rem;
+    border-bottom: 4px solid var(--accent-color);
+}
+
+.tituloantiguo {
+    /* Google Fonts!!! */
+    font-family: "Great Vibes", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+
+/* Barra de navegación */
+nav {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+nav a {
+    color: var(--background-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Products Section - Flexbox Layout */
+.container-productos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    justify-content: center;
+}
+
+.producto-card {
+    flex: 0 1 300px;
+    border: 2px solid var(--secondary-color);
+    padding: 1rem;
+    background: white;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.producto-card:hover {
+    transform: translateY(-5px);
+}
+
+.producto-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.producto-card .precio {
+    display: block;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+
+.producto-card button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.producto-card button:hover {
+    background-color: var(--primary-color);
+}
+
+/* Reseñas (Grid) */
+.reseñas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    background-color: var(--primary-color);
+    color: var(--background-color);
+}
+
+.reseñas-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+}
+
+.reseñas-card .estrellas {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+/* Contact Section */
+.container-contacto {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Section Headers */
+section {
+    padding: 4rem 2rem;
+}
+
+section h2 {
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-family: "Cinzel", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 768px) {
+    /* Navigation becomes vertical on smaller screens */
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* Adjust product cards for smaller screens */
+    .producto-card {
+        flex: 0 1 100%;
+    }
+
+    /* Adjust grid for ratings on smaller screens */
+    .reseñas-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Adjust section padding */
+    section {
+        padding: 2rem 1rem;
+    }
+
+    /* Adjust headings */
+    header h1 {
+        font-size: 2rem;
+    }
+
+    section h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Further adjustments for very small screens */
+    header {
+        padding: 1rem;
+    }
+
+    .container-productosr {
+        padding: 1rem;
+    }
+
+    .contact-container {
+        padding: 1rem;
+    }
+}
