@@ -41,13 +41,26 @@ document.addEventListener('DOMContentLoaded', () => {
     cartIcon.innerHTML = '🛒 <span class="cart-count">0</span>';
     document.body.appendChild(cartIcon);
 
-    // Handle cart visibility
+    // Add after creating floatingCart
+    const overlay = document.createElement('div');
+    overlay.className = 'cart-overlay';
+    document.body.appendChild(overlay);
+
+    // Modify cart visibility handlers
     cartIcon.addEventListener('click', () => {
         floatingCart.classList.toggle('show');
+        overlay.classList.toggle('show');
     });
 
     document.querySelector('.close-cart').addEventListener('click', () => {
         floatingCart.classList.remove('show');
+        overlay.classList.remove('show');
+    });
+
+    // Optional: close cart when clicking overlay
+    overlay.addEventListener('click', () => {
+        floatingCart.classList.remove('show');
+        overlay.classList.remove('show');
     });
 
     // Add to cart functionality
@@ -75,10 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     img,
                     quantity: 1
                 };
-                button.textContent = 'Añadido ✓';
+                button.textContent = 'Añadido (1)';
                 button.classList.add('added');
             } else {
                 cart[productId].quantity++;
+                button.textContent = `Añadido (${cart[productId].quantity})`;
             }
 
             updateCart();
@@ -208,11 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
         container.querySelectorAll('.producto-card button').forEach(button => {
             const productCard = button.closest('.producto-card');
             const productId = productCard.dataset.id;
-
-            const currentQuantity = cart[productId]?.quantity || 0;
-            if (currentQuantity > 0) {
-                button.textContent = 'Añadido ✓';
+            if (cart[productId]) {
+                button.textContent = `Añadido (${cart[productId].quantity})`;
                 button.classList.add('added');
+            } else {
+                button.textContent = 'Comprar';
+                button.classList.remove('added');
             }
 
             button.addEventListener('click', () => {
