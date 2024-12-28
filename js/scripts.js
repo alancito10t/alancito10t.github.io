@@ -1,335 +1,338 @@
-// 1. Product Information Display
 document.addEventListener('DOMContentLoaded', () => {
-    // Handle "More Info" clicks
-    const moreInfoLinks = document.querySelectorAll('.more-info-link');
-    moreInfoLinks.forEach(link => {
+    /*
+        FUNCIONALIDAD UNO
+        Ver más (descripciones de productos)
+    */
+    const verMas = document.querySelectorAll('.ver-mas');
+    verMas.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const description = link.nextElementSibling;
-            if (description.classList.contains('hidden')) {
-                description.classList.remove('hidden');
+            const descripcion = link.nextElementSibling;
+            if (descripcion.classList.contains('hidden')) {
+                descripcion.classList.remove('hidden');
                 link.textContent = '(-) Ver menos';
             } else {
-                description.classList.add('hidden');
+                descripcion.classList.add('hidden');
                 link.textContent = '(+) Ver más';
             }
         });
     });
 
-    // 2. Shopping Cart Implementation
-    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    /*
+        FUNCIONALIDAD DOS
+        Carrito de compras y cantidades
+    */
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || {};
 
-    // Function to generate consistent product IDs for static products
-    function generateStaticProductId(name, price) {
-        // Create a unique identifier based on product name and price
-        return `${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+    // Generar ID para productos estáticos (es decir, no de la API) en base a su nombre
+    // (los productos que vienen de la API ya tienen un ID único)
+    function generarID(nombre) {
+        return `${nombre.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
     }
 
-    // Create floating cart element
-    const floatingCart = document.createElement('div');
-    floatingCart.className = 'floating-cart';
-    floatingCart.innerHTML = `
-        <div class="cart-header">
-            <h3>Carrito de Compras</h3>
-            <span class="close-cart">&times;</span>
+    // Crear elemento carrito floating
+    const floatingCarrito = document.createElement('div');
+    floatingCarrito.className = 'carrito';
+    floatingCarrito.innerHTML = `
+        <div class="carrito-header">
+            <h3>Carrito</h3>
+            <span class="carrito-cerrar">&times;</span>
         </div>
-        <div class="cart-items"></div>
-        <div class="cart-footer">
-            <div class="cart-total">Total: £0</div>
-            <button class="checkout-btn">Finalizar Compra</button>
+        <div class="carrito-lista"></div>
+        <div class="carrito-footer">
+            <div class="carrito-total">Total: £0</div>
+            <button class="carrito-finalizar-boton">Finalizar Compra</button>
         </div>
     `;
-    document.body.appendChild(floatingCart);
+    document.body.appendChild(floatingCarrito);
 
-    // Add cart icon
-    const cartIcon = document.createElement('div');
-    cartIcon.className = 'cart-icon';
-    cartIcon.innerHTML = '🛒 <span class="cart-count">0</span>';
-    document.body.appendChild(cartIcon);
+    // Agregar ícono del carrito
+    const carritoIcon = document.createElement('div');
+    carritoIcon.className = 'carrito-icon';
+    carritoIcon.innerHTML = '🛒 <span class="carrito-nro">0</span>';
+    document.body.appendChild(carritoIcon);
 
-    // Add overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'cart-overlay';
-    document.body.appendChild(overlay);
+    // Agregar fondo oscuro al abrir el carrito
+    const fondo = document.createElement('div');
+    fondo.className = 'fondo-carrito';
+    document.body.appendChild(fondo);
 
-    // Cart visibility handlers
-    cartIcon.addEventListener('click', () => {
-        floatingCart.classList.toggle('show');
-        overlay.classList.toggle('show');
+    // Visibilidad del carrito/fondo
+    carritoIcon.addEventListener('click', () => {
+        floatingCarrito.classList.toggle('show');
+        fondo.classList.toggle('show');
+    });
+    document.querySelector('.carrito-cerrar').addEventListener('click', () => {
+        floatingCarrito.classList.remove('show');
+        fondo.classList.remove('show');
+    });
+    fondo.addEventListener('click', () => {
+        floatingCarrito.classList.remove('show');
+        fondo.classList.remove('show');
     });
 
-    document.querySelector('.close-cart').addEventListener('click', () => {
-        floatingCart.classList.remove('show');
-        overlay.classList.remove('show');
-    });
+    // Inicializar productos "de época" (estáticos, del HTML)
+    function inicializarProductosEpoca() {
+        const productosEpoca = document.querySelectorAll('#productos .producto-card');
+        productosEpoca.forEach(productoCard => {
+            const nombre = productoCard.querySelector('h3').textContent;
+            const precio = parseFloat(productoCard.querySelector('.precio').textContent.replace('£', ''));
+            const IDproducto = generarID(nombre);
+            productoCard.dataset.id = IDproducto;
 
-    overlay.addEventListener('click', () => {
-        floatingCart.classList.remove('show');
-        overlay.classList.remove('show');
-    });
-
-    // Initialize static products
-    function initializeStaticProducts() {
-        const staticProducts = document.querySelectorAll('#productos .producto-card');
-        staticProducts.forEach(productCard => {
-            const name = productCard.querySelector('h3').textContent;
-            const price = parseFloat(productCard.querySelector('.precio').textContent.replace('£', ''));
-            const productId = generateStaticProductId(name, price);
-            productCard.dataset.id = productId;
-
-            // Update button state if product is in cart
-            const button = productCard.querySelector('button');
-            if (cart[productId]) {
-                button.textContent = `Añadido (${cart[productId].quantity})`;
-                button.classList.add('added');
+            // Actualizar botón si el producto está en el carrito, según el ID
+            const boton = productoCard.querySelector('button');
+            if (carrito[IDproducto]) {
+                boton.textContent = `Añadido (${carrito[IDproducto].cantidad})`;
+                boton.classList.add('agregado');
             }
 
-            button.addEventListener('click', () => {
-                const img = productCard.querySelector('img').src;
+            boton.addEventListener('click', () => {
+                // Extraer imagen del producto
+                const img = productoCard.querySelector('img').src;
                 
-                if (!cart[productId]) {
-                    cart[productId] = {
-                        name,
-                        price,
+                if (!carrito[IDproducto]) {
+                    carrito[IDproducto] = {
+                        nombre,
+                        precio,
                         img,
-                        quantity: 1
+                        cantidad: 1
                     };
-                    button.classList.add('added');
+                    boton.classList.add('agregado'); // Cambiar estilo del botón
                 } else {
-                    cart[productId].quantity++;
+                    carrito[IDproducto].cantidad++;
                 }
-                
-                button.textContent = `Añadido (${cart[productId].quantity})`;
-                updateCart();
-                saveCart();
+                boton.textContent = `Añadido (${carrito[IDproducto].cantidad})`;
+                actualizarCarrito();
+                guardarCarrito();
             });
         });
     }
 
-    function updateCart() {
-        const cartItems = document.querySelector('.cart-items');
-        cartItems.innerHTML = '';
+    // Función para actualizar el carrito (precio total)
+    function actualizarCarrito() {
+        const carritoLista = document.querySelector('.carrito-lista');
+        carritoLista.innerHTML = '';
         let total = 0;
-        let itemCount = 0;
+        let nroProductos = 0;
 
-        Object.entries(cart).forEach(([id, product]) => {
-            itemCount += product.quantity;
-            total += product.price * product.quantity;
+        Object.entries(carrito).forEach(([id, producto]) => {
+            nroProductos += producto.cantidad;
+            total += producto.precio * producto.cantidad;
 
-            const itemElement = document.createElement('div');
-            itemElement.className = 'cart-item';
-            itemElement.innerHTML = `
-                <img src="${product.img}" alt="${product.name}">
-                <div class="item-details">
-                    <h4>${product.name}</h4>
-                    <div class="item-price">£${product.price}</div>
-                    <div class="item-quantity">
-                        <button class="quantity-btn minus">-</button>
-                        <span>${product.quantity}</span>
-                        <button class="quantity-btn plus">+</button>
-                        <button class="remove-btn">🗑️</button>
+            // Producto en el carrito
+            const productoEnCarrito = document.createElement('div');
+            productoEnCarrito.className = 'carrito-producto';
+            productoEnCarrito.innerHTML = `
+                <img src="${producto.img}" alt="${producto.nombre}">
+                <div class="carrito-producto-detalles">
+                    <h4>${producto.nombre}</h4>
+                    <div class="carrito-producto-precio">£${producto.precio}</div>
+                    <div class="carrito-producto-cantidad">
+                        <button class="carrito-cantidad-boton minus">-</button>
+                        <span>${producto.cantidad}</span>
+                        <button class="carrito-cantidad-boton plus">+</button>
+                        <button class="carrito-eliminar-boton">🗑️</button>
                     </div>
                 </div>
             `;
 
-            // Quantity buttons functionality
-            itemElement.querySelector('.minus').addEventListener('click', () => {
-                if (cart[id].quantity > 1) {
-                    cart[id].quantity--;
-                    updateProductButton(id);
-                    updateCart();
-                    saveCart();
+            // Botones de cantidad
+            productoEnCarrito.querySelector('.minus').addEventListener('click', () => {
+                if (carrito[id].cantidad > 1) {
+                    carrito[id].cantidad--;
+                    actualizarBoton(id);
+                    actualizarCarrito();
+                    guardarCarrito();
                 }
             });
 
-            itemElement.querySelector('.plus').addEventListener('click', () => {
-                cart[id].quantity++;
-                updateProductButton(id);
-                updateCart();
-                saveCart();
+            productoEnCarrito.querySelector('.plus').addEventListener('click', () => {
+                carrito[id].cantidad++;
+                actualizarBoton(id);
+                actualizarCarrito();
+                guardarCarrito();
             });
 
-            itemElement.querySelector('.remove-btn').addEventListener('click', () => {
-                delete cart[id];
-                updateProductButton(id, true);
-                updateCart();
-                saveCart();
+            productoEnCarrito.querySelector('.carrito-eliminar-boton').addEventListener('click', () => {
+                delete carrito[id];
+                actualizarBoton(id, true);
+                actualizarCarrito();
+                guardarCarrito();
             });
 
-            cartItems.appendChild(itemElement);
+            carritoLista.appendChild(productoEnCarrito);
         });
 
-        document.querySelector('.cart-total').textContent = `Total: £${total.toFixed(2)}`;
-        document.querySelector('.cart-count').textContent = itemCount;
+        document.querySelector('.carrito-total').textContent = `Total: £${total.toFixed(2)}`;
+        document.querySelector('.carrito-nro').textContent = nroProductos;
     }
 
-    function updateProductButton(productId, removed = false) {
-        const productCard = document.querySelector(`[data-id="${productId}"]`);
-        if (productCard) {
-            const button = productCard.querySelector('button');
+    function actualizarBoton(IDproducto, removed = false) {
+        const productoCard = document.querySelector(`[data-id="${IDproducto}"]`);
+        if (productoCard) {
+            const boton = productoCard.querySelector('button');
             if (removed) {
-                button.textContent = 'Comprar';
-                button.classList.remove('added');
+                boton.textContent = 'Comprar';
+                boton.classList.remove('agregado');
             } else {
-                button.textContent = `Añadido (${cart[productId].quantity})`;
+                boton.textContent = `Añadido (${carrito[IDproducto].cantidad})`;
             }
         }
     }
 
-    function saveCart() {
-        try {
-            localStorage.setItem('cart', JSON.stringify(cart));
-        } catch (error) {
-            console.error('Error al guardar el carrito', error);
-        }
+    function guardarCarrito() {
+        localStorage.setItem('carrito', JSON.stringify(carrito));
     }
 
-    // Initialize cart state
-    initializeStaticProducts();
-    updateCart();
+    // Inicializar carrito y actualizar productos
+    inicializarProductosEpoca();
+    actualizarCarrito();
 
-    // Setup Intersection Observer for fade-in effect
+    /*
+        FUNCIONALIDAD TRES
+        Animación fade-in
+    */
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Optional: stop observing after animation
                 observer.unobserve(entry.target);
             }
         });
     }, {
-        threshold: 0.1 // Card will start appearing when 10% is visible
+        threshold: 0.1
     });
-
-    // Observe all product cards (both static and modern)
+    // Para todos los productos (época y modernos)
     document.querySelectorAll('.producto-card').forEach(card => {
         observer.observe(card);
     });
 
-    // 3. Fetch and display modern products
-    async function fetchModernProducts() {
+    /*
+        FUNCIONALIDAD CUATRO
+        Productos modernos (fetch API REST)
+    */
+    async function obtenerProductosModernos() {
         try {
-            const response = await fetch('https://fakestoreapi.com/products');
-            const products = await response.json();
+            const respuesta = await fetch('https://fakestoreapi.com/products');
+            const productos = await respuesta.json();
             
-            const modernProductsSection = document.getElementById('nuevosproductos');
-            const productsContainer = document.createElement('div');
-            productsContainer.className = 'container-productos';
+            const seccionProductosModernos = document.getElementById('productosmodernos');
+            const containerProductosModernos = document.createElement('div');
+            containerProductosModernos.className = 'container-productos';
 
-            products.forEach(product => {
-                const productId = `modern-${product.id}`;
-                const productCard = document.createElement('article');
-                const productTitle = product.title.length > 30 ? product.title.substring(0, 30) + '...' : product.title;
-                productCard.className = 'producto-card';
-                productCard.dataset.id = productId;
+            productos.forEach(producto => {
+                const IDproducto = `moderno-${producto.id}`;
+                const productoCard = document.createElement('article');
+                const productoNombre = producto.title.length > 30 ? producto.title.substring(0, 30) + '...' : producto.title;
+                productoCard.className = 'producto-card';
+                productoCard.dataset.id = IDproducto;
                 
-                productCard.innerHTML = `
-                    <img src="${product.image}" alt="${productTitle}">
-                    <h3>${productTitle}</h3>
-                    <a href="#" class="more-info-link">(+) Ver más</a>
-                    <p class="product-description hidden">${product.description}</p>
-                    <span class="precio">£${parseFloat(product.price).toFixed(2)}</span>
-                    <button>${cart[productId] ? `Añadido (${cart[productId].quantity})` : 'Comprar'}</button>
+                productoCard.innerHTML = `
+                    <img src="${producto.image}" alt="${productoNombre}">
+                    <h3>${productoNombre}</h3>
+                    <a href="#" class="ver-mas">(+) Ver más</a>
+                    <p class="descripcion hidden">${producto.description}</p>
+                    <span class="precio">£${parseFloat(producto.price).toFixed(2)}</span>
+                    <button>${carrito[IDproducto] ? `Añadido (${carrito[IDproducto].cantidad})` : 'Comprar'}</button>
                 `;
 
-                if (cart[productId]) {
-                    productCard.querySelector('button').classList.add('added');
+                if (carrito[IDproducto]) {
+                    productoCard.querySelector('button').classList.add('agregado');
                 }
 
-                productsContainer.appendChild(productCard);
+                containerProductosModernos.appendChild(productoCard);
             });
 
-            modernProductsSection.appendChild(productsContainer);
-            initializeNewProductEventListeners(productsContainer);
+            seccionProductosModernos.appendChild(containerProductosModernos);
+            mostrarModernos(containerProductosModernos);
         } catch (error) {
-            console.error('Error obteniendo productos:', error);
+            console.error('Error obteniendo productos de API:', error);
         }
     }
 
-    function initializeNewProductEventListeners(container) {
-        // Add More Info functionality
-        container.querySelectorAll('.more-info-link').forEach(link => {
+    function mostrarModernos(container) {
+        // Ver Más para productos modernos
+        container.querySelectorAll('.ver-mas').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const description = link.nextElementSibling;
-                if (description.classList.contains('hidden')) {
-                    description.classList.remove('hidden');
+                const descripcion = link.nextElementSibling;
+                if (descripcion.classList.contains('hidden')) {
+                    descripcion.classList.remove('hidden');
                     link.textContent = '(-) Ver menos';
                 } else {
-                    description.classList.add('hidden');
+                    descripcion.classList.add('hidden');
                     link.textContent = '(+) Ver más';
                 }
             });
         });
 
-        // Add Cart functionality
-        container.querySelectorAll('.producto-card button').forEach(button => {
-            const productCard = button.closest('.producto-card');
-            const productId = productCard.dataset.id;
+        // Carrito para productos modernos
+        container.querySelectorAll('.producto-card button').forEach(boton => {
+            const productoCard = boton.closest('.producto-card');
+            const IDproducto = productoCard.dataset.id;
 
-            button.addEventListener('click', () => {
-                const name = productCard.querySelector('h3').textContent;
-                const price = parseFloat(productCard.querySelector('.precio').textContent.replace('£', ''));
-                const img = productCard.querySelector('img').src;
+            boton.addEventListener('click', () => {
+                const nombre = productoCard.querySelector('h3').textContent;
+                const precio = parseFloat(productoCard.querySelector('.precio').textContent.replace('£', ''));
+                const img = productoCard.querySelector('img').src;
 
-                if (!cart[productId]) {
-                    cart[productId] = {
-                        name,
-                        price,
+                if (!carrito[IDproducto]) {
+                    carrito[IDproducto] = {
+                        nombre,
+                        precio,
                         img,
-                        quantity: 1
+                        cantidad: 1
                     };
-                    button.classList.add('added');
+                    boton.classList.add('agregado');
                 } else {
-                    cart[productId].quantity++;
+                    carrito[IDproducto].cantidad++;
                 }
 
-                button.textContent = `Añadido (${cart[productId].quantity})`;
-                updateCart();
-                saveCart();
+                boton.textContent = `Añadido (${carrito[IDproducto].cantidad})`;
+                actualizarCarrito();
+                guardarCarrito();
             });
         });
         
-        // Don't forget to also observe new products when they're fetched
-        // Add observation for new products
         container.querySelectorAll('.producto-card').forEach(card => {
             observer.observe(card);
         });
     }
 
-    // Fetch modern products when the page loads
-    fetchModernProducts();
+    // Obtener productos modernos (API) cuando se carga la página
+    obtenerProductosModernos();
 
-    function outputProductsInfo() {
-        // Wait a bit to ensure all products (including API ones) are loaded
+    function consolaProductosJSON() {
+        // Esperar a que todos los productos carguen...
         setTimeout(() => {
-            const productsInfo = [];
+            const productosJSON = [];
     
-            // Get vintage products
-            document.querySelectorAll('#productos .producto-card').forEach(product => {
-                productsInfo.push({
-                    type: 'vintage',
-                    id: product.dataset.id,
-                    name: product.querySelector('h3').textContent,
-                    description: product.querySelector('.product-description').textContent.trim()
+            // Productos de época
+            document.querySelectorAll('#productos .producto-card').forEach(producto => {
+                productosJSON.push({
+                    tipo: 'epoca',
+                    id: producto.dataset.id,
+                    nombre: producto.querySelector('h3').textContent,
+                    descripcion: producto.querySelector('.descripcion').textContent.trim()
                 });
             });
     
-            // Get modern products
-            document.querySelectorAll('#nuevosproductos .producto-card').forEach(product => {
-                productsInfo.push({
-                    type: 'modern',
-                    id: product.dataset.id,
-                    name: product.querySelector('h3').textContent,
-                    description: product.querySelector('.product-description').textContent.trim()
+            // Productos modernos
+            document.querySelectorAll('#productosmodernos .producto-card').forEach(producto => {
+                productosJSON.push({
+                    tipo: 'moderno',
+                    id: producto.dataset.id,
+                    nombre: producto.querySelector('h3').textContent,
+                    descripcion: producto.querySelector('.descripcion').textContent.trim()
                 });
             });
     
-            // Output as formatted JSON
-            console.log(JSON.stringify(productsInfo, null, 2));
-        }, 2000); // 2 second delay to ensure all products are loaded
+            // Print por consola como JSON
+            console.log(JSON.stringify(productosJSON, null, 2));
+        }, 2000); // ... 2 segundos
     }
     
-    // Call the function
-    outputProductsInfo();
+    // Llamar a la función para JSON de productos
+    consolaProductosJSON();
 });
