@@ -170,14 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 productCard.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
-                    <h3>${product.title}</h3>
-                    <p>${product.description.substring(0, 50)}...</p>
+                    <h3>${product.title.length > 30 ? product.title.substring(0, 30) + '...' : product.title}</h3>
                     <a href="#" class="more-info-link">(+) Ver más</a>
                     <p class="product-description hidden">${product.description}</p>
-                    <span class="precio">£${product.price}</span>
+                    <span class="precio">£${parseFloat(product.price).toFixed(2)}</span>
                     <button>Comprar</button>
                 `;
-
                 productsContainer.appendChild(productCard);
             });
 

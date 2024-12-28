@@ -7,6 +7,7 @@
     --text-color: #2c1810;
 }
 
+/* Estilo general (body y botones) */
 body {
     margin: 0;
     padding: 0;
@@ -14,6 +15,11 @@ body {
     color: var(--text-color);
     font-family: 'Crimson Text', Georgia, serif;
     line-height: 1.6;
+}
+
+button {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
 }
 
 /* Título de la página */
@@ -86,48 +92,65 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 450px;
+    position: relative;
 }
 
 .producto-card:hover {
     transform: translateY(-5px);
 }
 
+.producto-card h3 {
+    margin: 0.5rem 0;
+}
+
+.producto-card p {
+    margin: 0.5rem 0;
+}
+
 .producto-card img {
     width: 100%;
     max-width: 300px;
-    height: auto;
+    height: 200px;
     object-fit: contain;
     margin-bottom: 1rem;
 }
 
+.producto-card .more-info-link {
+    text-decoration: none;
+    color: var(--secondary-color);
+    margin: 0.5rem 0;
+}
+
 .producto-card .precio {
+    margin-top: auto;
     display: block;
     color: var(--secondary-color);
     font-size: 1.2rem;
-    margin: 1rem 0;
+    padding: 0.5rem 0;
 }
 
 .producto-card button {
+    width: 80%;
     background-color: var(--secondary-color);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 0.5rem;
 }
 
 .producto-card button:hover {
     background-color: var(--primary-color);
 }
 
-/* Productos modernos */
-#nuevosproductos h3 {
-    text-align: center;
-    font-size: 0.9rem;
+.producto-card button.added {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
 }
 
-/* JavaScript */
-/* Product Description Toggle */
+/* Ver más info */
 .product-description.hidden {
     display: none;
 }
@@ -139,7 +162,14 @@ nav a:hover {
     text-align: left;
 }
 
-/* Floating Cart */
+/* Productos modernos */
+#slogan {
+    text-align: center;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+/* Carrito */
 .cart-icon {
     position: fixed;
     top: 20px;
@@ -278,18 +308,6 @@ nav a:hover {
 
 .checkout-btn:hover {
     background-color: var(--primary-color);
-}
-
-/* Modern Products Section */
-#nuevosproductos .producto-card img {
-    max-height: 200px;
-    width: auto;
-}
-
-/* Added to Cart Button State */
-.producto-card button.added {
-    background-color: var(--accent-color);
-    color: var(--primary-color);
 }
 
 /* Reseñas (Grid) */
