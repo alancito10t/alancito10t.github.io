@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Shopping Cart Implementation
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
 
+    // Function to generate consistent product IDs for static products
+    function generateStaticProductId(name, price) {
+        // Create a unique identifier based on product name and price
+        return `static-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${price}`;
+    }
+
     // Create floating cart element
     const floatingCart = document.createElement('div');
     floatingCart.className = 'floating-cart';
@@ -41,12 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
     cartIcon.innerHTML = '🛒 <span class="cart-count">0</span>';
     document.body.appendChild(cartIcon);
 
-    // Add after creating floatingCart
+    // Add overlay
     const overlay = document.createElement('div');
     overlay.className = 'cart-overlay';
     document.body.appendChild(overlay);
 
-    // Modify cart visibility handlers
+    // Cart visibility handlers
     cartIcon.addEventListener('click', () => {
         floatingCart.classList.toggle('show');
         overlay.classList.toggle('show');
@@ -57,48 +63,48 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.classList.remove('show');
     });
 
-    // Optional: close cart when clicking overlay
     overlay.addEventListener('click', () => {
         floatingCart.classList.remove('show');
         overlay.classList.remove('show');
     });
 
-    // Add to cart functionality
-    const addToCartButtons = document.querySelectorAll('.producto-card button');
-    addToCartButtons.forEach(button => {
-        const productCard = button.closest('.producto-card');
-        const productId = productCard.dataset.id || Math.random().toString(36).substr(2, 9);
-        productCard.dataset.id = productId;
-
-        const currentQuantity = cart[productId]?.quantity || 0;
-        if (currentQuantity > 0) {
-            button.textContent = 'Añadido ✓';
-            button.classList.add('added');
-        }
-
-        button.addEventListener('click', () => {
+    // Initialize static products
+    function initializeStaticProducts() {
+        const staticProducts = document.querySelectorAll('#productos .producto-card');
+        staticProducts.forEach(productCard => {
             const name = productCard.querySelector('h3').textContent;
             const price = parseFloat(productCard.querySelector('.precio').textContent.replace('£', ''));
-            const img = productCard.querySelector('img').src;
+            const productId = generateStaticProductId(name, price);
+            productCard.dataset.id = productId;
 
-            if (!cart[productId]) {
-                cart[productId] = {
-                    name,
-                    price,
-                    img,
-                    quantity: 1
-                };
-                button.textContent = 'Añadido (1)';
-                button.classList.add('added');
-            } else {
-                cart[productId].quantity++;
+            // Update button state if product is in cart
+            const button = productCard.querySelector('button');
+            if (cart[productId]) {
                 button.textContent = `Añadido (${cart[productId].quantity})`;
+                button.classList.add('added');
             }
 
-            updateCart();
-            saveCart();
+            button.addEventListener('click', () => {
+                const img = productCard.querySelector('img').src;
+                
+                if (!cart[productId]) {
+                    cart[productId] = {
+                        name,
+                        price,
+                        img,
+                        quantity: 1
+                    };
+                    button.classList.add('added');
+                } else {
+                    cart[productId].quantity++;
+                }
+                
+                button.textContent = `Añadido (${cart[productId].quantity})`;
+                updateCart();
+                saveCart();
+            });
         });
-    });
+    }
 
     function updateCart() {
         const cartItems = document.querySelector('.cart-items');
@@ -130,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             itemElement.querySelector('.minus').addEventListener('click', () => {
                 if (cart[id].quantity > 1) {
                     cart[id].quantity--;
+                    updateProductButton(id);
                     updateCart();
                     saveCart();
                 }
@@ -137,18 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             itemElement.querySelector('.plus').addEventListener('click', () => {
                 cart[id].quantity++;
+                updateProductButton(id);
                 updateCart();
                 saveCart();
             });
 
             itemElement.querySelector('.remove-btn').addEventListener('click', () => {
                 delete cart[id];
-                const productCard = document.querySelector(`[data-id="${id}"]`);
-                if (productCard) {
-                    const addButton = productCard.querySelector('button');
-                    addButton.textContent = 'Comprar';
-                    addButton.classList.remove('added');
-                }
+                updateProductButton(id, true);
                 updateCart();
                 saveCart();
             });
@@ -160,11 +163,25 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.cart-count').textContent = itemCount;
     }
 
+    function updateProductButton(productId, removed = false) {
+        const productCard = document.querySelector(`[data-id="${productId}"]`);
+        if (productCard) {
+            const button = productCard.querySelector('button');
+            if (removed) {
+                button.textContent = 'Comprar';
+                button.classList.remove('added');
+            } else {
+                button.textContent = `Añadido (${cart[productId].quantity})`;
+            }
+        }
+    }
+
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
     // Initialize cart state
+    initializeStaticProducts();
     updateCart();
 
     // 3. Fetch and display modern products
@@ -178,9 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
             productsContainer.className = 'container-productos';
 
             products.forEach(product => {
+                const productId = `modern-${product.id}`;
                 const productCard = document.createElement('article');
                 productCard.className = 'producto-card';
-                productCard.dataset.id = `modern-${product.id}`;
+                productCard.dataset.id = productId;
                 
                 productCard.innerHTML = `
                     <img src="${product.image}" alt="${product.title}">
@@ -188,14 +206,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="#" class="more-info-link">(+) Ver más</a>
                     <p class="product-description hidden">${product.description}</p>
                     <span class="precio">£${parseFloat(product.price).toFixed(2)}</span>
-                    <button>Comprar</button>
+                    <button>${cart[productId] ? `Añadido (${cart[productId].quantity})` : 'Comprar'}</button>
                 `;
+
+                if (cart[productId]) {
+                    productCard.querySelector('button').classList.add('added');
+                }
+
                 productsContainer.appendChild(productCard);
             });
 
             modernProductsSection.appendChild(productsContainer);
-
-            // Reinitialize event listeners for new products
             initializeNewProductEventListeners(productsContainer);
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -222,13 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         container.querySelectorAll('.producto-card button').forEach(button => {
             const productCard = button.closest('.producto-card');
             const productId = productCard.dataset.id;
-            if (cart[productId]) {
-                button.textContent = `Añadido (${cart[productId].quantity})`;
-                button.classList.add('added');
-            } else {
-                button.textContent = 'Comprar';
-                button.classList.remove('added');
-            }
 
             button.addEventListener('click', () => {
                 const name = productCard.querySelector('h3').textContent;
@@ -242,12 +256,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         img,
                         quantity: 1
                     };
-                    button.textContent = 'Añadido ✓';
                     button.classList.add('added');
                 } else {
                     cart[productId].quantity++;
                 }
 
+                button.textContent = `Añadido (${cart[productId].quantity})`;
                 updateCart();
                 saveCart();
             });
