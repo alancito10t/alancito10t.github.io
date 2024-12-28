@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Sitemap: https://talentotechjs-as2024.netlify.app/sitemap.xml
+
+# Optionally block certain paths
+Disallow: /admin/
+Disallow: /private/
