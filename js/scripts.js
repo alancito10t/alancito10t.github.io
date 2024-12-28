@@ -177,7 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveCart() {
-        localStorage.setItem('cart', JSON.stringify(cart));
+        try {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        } catch (error) {
+            console.error('Error al guardar el carrito', error);
+        }
     }
 
     // Initialize cart state
@@ -238,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modernProductsSection.appendChild(productsContainer);
             initializeNewProductEventListeners(productsContainer);
         } catch (error) {
-            console.error('Error fetching products:', error);
+            console.error('Error obteniendo productos:', error);
         }
     }
 
