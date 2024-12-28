@@ -527,4 +527,20 @@ footer {
     .botonform {
         padding: 0.6rem;
     }
+    /* Carrito en pantallas móviles */
+    .floating-cart {
+        width: 80%; 
+        right: -500%;
+        top: 50px;
+        margin: 0 auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .floating-cart.show {
+        right: auto;
+    }
+    .cart-icon {
+        top: 10px;
+        right: 10px;
+    }
 }
