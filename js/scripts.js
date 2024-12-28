@@ -184,6 +184,24 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeStaticProducts();
     updateCart();
 
+    // Setup Intersection Observer for fade-in effect
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Optional: stop observing after animation
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1 // Card will start appearing when 10% is visible
+    });
+
+    // Observe all product cards (both static and modern)
+    document.querySelectorAll('.producto-card').forEach(card => {
+        observer.observe(card);
+    });
+
     // 3. Fetch and display modern products
     async function fetchModernProducts() {
         try {
@@ -197,12 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
             products.forEach(product => {
                 const productId = `modern-${product.id}`;
                 const productCard = document.createElement('article');
+                const productTitle = product.title.length > 30 ? product.title.substring(0, 30) + '...' : product.title;
                 productCard.className = 'producto-card';
                 productCard.dataset.id = productId;
                 
                 productCard.innerHTML = `
-                    <img src="${product.image}" alt="${product.title}">
-                    <h3>${product.title.length > 30 ? product.title.substring(0, 30) + '...' : product.title}</h3>
+                    <img src="${product.image}" alt="${productTitle}">
+                    <h3>${productTitle}</h3>
                     <a href="#" class="more-info-link">(+) Ver más</a>
                     <p class="product-description hidden">${product.description}</p>
                     <span class="precio">£${parseFloat(product.price).toFixed(2)}</span>
@@ -266,36 +285,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveCart();
             });
         });
-    }
-
-    // Fetch modern products when the page loads
-    fetchModernProducts();
-
-    // Setup Intersection Observer for fade-in effect
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Optional: stop observing after animation
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.1 // Card will start appearing when 10% is visible
-    });
-
-    // Observe all product cards (both static and modern)
-    document.querySelectorAll('.producto-card').forEach(card => {
-        observer.observe(card);
-    });
-
-    // Don't forget to also observe new products when they're fetched
-    function initializeNewProductEventListeners(container) {
-        // Your existing code...
-
+        
+        // Don't forget to also observe new products when they're fetched
         // Add observation for new products
         container.querySelectorAll('.producto-card').forEach(card => {
             observer.observe(card);
         });
     }
+
+    // Fetch modern products when the page loads
+    fetchModernProducts();
 });
