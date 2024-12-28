@@ -295,4 +295,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch modern products when the page loads
     fetchModernProducts();
+
+    function outputProductsInfo() {
+        // Wait a bit to ensure all products (including API ones) are loaded
+        setTimeout(() => {
+            const productsInfo = [];
+    
+            // Get vintage products
+            document.querySelectorAll('#productos .producto-card').forEach(product => {
+                productsInfo.push({
+                    type: 'vintage',
+                    id: product.dataset.id,
+                    name: product.querySelector('h3').textContent,
+                    description: product.querySelector('.product-description').textContent.trim()
+                });
+            });
+    
+            // Get modern products
+            document.querySelectorAll('#nuevosproductos .producto-card').forEach(product => {
+                productsInfo.push({
+                    type: 'modern',
+                    id: product.dataset.id,
+                    name: product.querySelector('h3').textContent,
+                    description: product.querySelector('.product-description').textContent.trim()
+                });
+            });
+    
+            // Output as formatted JSON
+            console.log(JSON.stringify(productsInfo, null, 2));
+        }, 2000); // 2 second delay to ensure all products are loaded
+    }
+    
+    // Call the function
+    outputProductsInfo();
 });
