@@ -270,4 +270,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch modern products when the page loads
     fetchModernProducts();
+
+    // Setup Intersection Observer for fade-in effect
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Optional: stop observing after animation
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1 // Card will start appearing when 10% is visible
+    });
+
+    // Observe all product cards (both static and modern)
+    document.querySelectorAll('.producto-card').forEach(card => {
+        observer.observe(card);
+    });
+
+    // Don't forget to also observe new products when they're fetched
+    function initializeNewProductEventListeners(container) {
+        // Your existing code...
+
+        // Add observation for new products
+        container.querySelectorAll('.producto-card').forEach(card => {
+            observer.observe(card);
+        });
+    }
 });
