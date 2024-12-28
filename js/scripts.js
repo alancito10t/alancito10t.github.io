@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to generate consistent product IDs for static products
     function generateStaticProductId(name, price) {
         // Create a unique identifier based on product name and price
-        return `static-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${price}`;
+        return `${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
     }
 
     // Create floating cart element
